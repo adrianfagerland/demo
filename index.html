@@ -1,0 +1,115 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Tomtekart Demo med Interaktiv Sidebar</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    #container {
+      display: flex;
+      height: 100vh;
+    }
+    #sidebar {
+      width: 360px;
+      background-color: #f2f4f8;
+      border-right: 1px solid #ccc;
+      padding: 20px;
+      box-sizing: border-box;
+      overflow-y: auto;
+    }
+    #map {
+      flex: 1;
+    }
+    .plot-card {
+      background: white;
+      border: 1px solid #ddd;
+      padding: 15px;
+      margin-bottom: 15px;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .plot-card:hover {
+      background: #eaf0f7;
+    }
+    .plot-title {
+      font-weight: bold;
+      font-size: 16px;
+      margin-bottom: 8px;
+    }
+    .plot-info {
+      font-size: 14px;
+      color: #333;
+    }
+  </style>
+</head>
+<body>
+<div id="container">
+  <div id="sidebar">
+    <h2>Tilgjengelige tomter</h2>
+    <div class="plot-card" onclick="zoomTo('A')">
+      <div class="plot-title">Tomt A</div>
+      <div class="plot-info">Størrelse: 1000 m²</div>
+      <div class="plot-info">Deling: Kan deles i 2</div>
+    </div>
+    <div class="plot-card" onclick="zoomTo('B')">
+      <div class="plot-title">Tomt B</div>
+      <div class="plot-info">Størrelse: 1200 m²</div>
+      <div class="plot-info">Deling: Kan deles i 3</div>
+    </div>
+  </div>
+  <div id="map"></div>
+</div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+  const map = L.map('map').setView([63.4305, 10.3951], 15);
+
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 19,
+    attribution: '&copy; OpenStreetMap contributors'
+  }).addTo(map);
+
+  const polygons = {};
+
+  polygons['A'] = L.polygon([
+    [63.4305, 10.3925],
+    [63.4308, 10.3925],
+    [63.4308, 10.3935],
+    [63.4305, 10.3935]
+  ], {
+    color: 'orange',
+    fillColor: '#ffa500',
+    fillOpacity: 0.5
+  }).addTo(map).bindPopup("Tomt A<br>1000 m²<br>Kan deles i 2");
+
+  polygons['B'] = L.polygon([
+    [63.4305, 10.3936],
+    [63.4308, 10.3936],
+    [63.4308, 10.3946],
+    [63.4305, 10.3946]
+  ], {
+    color: 'green',
+    fillColor: '#00cc44',
+    fillOpacity: 0.5
+  }).addTo(map).bindPopup("Tomt B<br>1200 m²<br>Kan deles i 3");
+
+  function zoomTo(id) {
+    const polygon = polygons[id];
+    if (polygon) {
+      map.fitBounds(polygon.getBounds());
+      polygon.openPopup();
+    }
+  }
+</script>
+</body>
+</html>
